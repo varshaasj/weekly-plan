@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Week — March 9</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0c0e0d; --s1:#131614; --s2:#1a1d1b; --border:#232824;
+  --text:#dfe8e1; --muted:#4e5750;
+  --lime:#a3e635; --blue:#7dd3fc; --orange:#fdba74;
+  --purple:#c4b5fd; --red:#fca5a5; --green:#6ee7b7;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;padding-bottom:100px;}
+
+/* HEADER */
+header{padding:40px 28px 28px;border-bottom:1px solid var(--border);}
+.eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);margin-bottom:10px;}
+h1{font-family:'Syne',sans-serif;font-size:clamp(24px,5vw,48px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:14px;}
+h1 em{font-style:normal;color:var(--lime);}
+.subhead{font-size:12px;color:var(--muted);line-height:1.85;max-width:500px;border-left:2px solid var(--purple);padding-left:12px;}
+.subhead strong{color:var(--text);}
+
+/* BRAIN NOTE */
+.brain-note{margin:20px 28px 0;padding:16px 18px;background:rgba(196,181,253,.06);border:1px solid rgba(196,181,253,.18);border-radius:9px;font-size:12px;line-height:1.8;color:var(--text);}
+.brain-note .bn-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--purple);margin-bottom:7px;}
+.brain-note strong{color:var(--purple);}
+
+/* TONIGHT */
+.tonight-bar{margin:20px 28px 0;padding:14px 18px;background:rgba(253,186,116,.06);border:1px solid rgba(253,186,116,.2);border-radius:9px;display:flex;align-items:flex-start;gap:14px;}
+.tn-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.tn-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--orange);margin-bottom:4px;}
+.tn-body{font-size:12px;color:var(--muted);line-height:1.7;}
+.tn-body strong{color:var(--text);}
+
+/* APP COUNTER */
+.app-bar{display:flex;align-items:center;gap:16px;padding:16px 28px;background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:24px;flex-wrap:wrap;gap:12px;}
+.app-big{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--lime);line-height:1;}
+.app-right{flex:1;min-width:140px;}
+.app-lbl{font-size:10px;color:var(--muted);margin-bottom:5px;letter-spacing:.05em;}
+.prog-track{height:5px;background:var(--border);border-radius:99px;margin-bottom:5px;}
+.prog-fill{height:100%;background:var(--lime);border-radius:99px;transition:width .4s ease;max-width:100%;}
+.app-sublbl{font-size:10px;color:var(--muted);}
+.app-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.btn{font-family:'DM Mono',monospace;font-size:11px;padding:8px 15px;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:all .15s;background:var(--s2);color:var(--text);}
+.btn:hover{border-color:var(--lime);color:var(--lime);}
+.btn.primary{background:var(--lime);color:#0c0e0d;border-color:var(--lime);font-weight:500;}
+.btn.primary:hover{background:#c4f565;}
+.btn.sm{padding:6px 11px;}
+
+/* TABS */
+.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;padding:0 28px;overflow-x:auto;scrollbar-width:none;}
+.tab{font-family:'DM Mono',monospace;font-size:11px;padding:14px 18px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--lime);border-bottom-color:var(--lime);}
+
+.panel{display:none;}.panel.active{display:block;}
+
+/* SCHEDULE */
+.sched{padding:24px 28px;}
+
+/* RULE CARD */
+.rule-card{padding:14px 16px;background:var(--s1);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;font-size:12px;line-height:1.8;color:var(--muted);}
+.rule-card strong{color:var(--text);}
+.rule-card .rc-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--lime);margin-bottom:6px;}
+
+/* DAY BLOCK */
+.day-grid{display:grid;gap:10px;}
+.day-block{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.day-block.is-monday{border-color:rgba(253,186,116,.35);}
+.day-block.is-today{border-color:rgba(163,230,53,.25);}
+
+.day-hdr{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none;}
+.day-pip{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.pip-lime{background:var(--lime);box-shadow:0 0 7px var(--lime);}
+.pip-orange{background:var(--orange);box-shadow:0 0 7px var(--orange);}
+.pip-muted{background:var(--muted);}
+.day-name-wrap .dn{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;}
+.day-name-wrap .dd{font-size:9px;color:var(--muted);margin-top:1px;}
+.day-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{font-size:8px;letter-spacing:.07em;text-transform:uppercase;padding:2px 6px;border-radius:3px;border:1px solid;white-space:nowrap;}
+.c-room{color:var(--orange);border-color:rgba(253,186,116,.3);background:rgba(253,186,116,.07);}
+.c-apps{color:var(--lime);border-color:rgba(163,230,53,.25);background:rgba(163,230,53,.06);}
+.c-school{color:var(--blue);border-color:rgba(125,211,252,.25);background:rgba(125,211,252,.06);}
+.c-leet{color:var(--purple);border-color:rgba(196,181,253,.25);background:rgba(196,181,253,.06);}
+.c-rest{color:var(--green);border-color:rgba(110,231,183,.25);background:rgba(110,231,183,.06);}
+.c-admin{color:var(--red);border-color:rgba(252,165,165,.25);background:rgba(252,165,165,.06);}
+
+.day-prog{margin-left:auto;font-size:10px;color:var(--muted);}
+.caret{color:var(--muted);font-size:9px;transition:transform .2s;margin-left:4px;}
+.day-block.collapsed .caret{transform:rotate(-90deg);}
+.day-block.collapsed .tasks{display:none;}
+
+.tasks{padding:0 0 8px;}
+.task{display:flex;align-items:flex-start;gap:11px;padding:9px 16px;cursor:pointer;transition:background .12s;border-left:2px solid transparent;}
+.task:hover{background:var(--s2);}
+.task.done{opacity:.35;border-left-color:var(--lime);}
+.task.done .ttxt{text-decoration:line-through;}
+.cb{width:14px;height:14px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:transparent;transition:all .15s;}
+.task.done .cb{background:var(--lime);border-color:var(--lime);color:#0c0e0d;}
+.ttxt{font-size:12px;line-height:1.5;}
+.tsub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.6;}
+.tsub strong{color:var(--text);}
+.tbadge{display:inline-block;font-size:9px;color:var(--muted);background:var(--s2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:middle;}
+
+.sec-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:14px 16px 5px;border-top:1px solid var(--border);margin-top:2px;}
+.sec-label.first{border-top:none;margin-top:0;padding-top:10px;}
+
+/* MINIMUM BADGE */
+.min-badge{display:inline-block;font-size:8px;background:rgba(163,230,53,.1);color:var(--lime);border:1px solid rgba(163,230,53,.25);border-radius:3px;padding:1px 6px;margin-left:6px;vertical-align:middle;letter-spacing:.06em;}
+
+/* STRATEGY */
+.strat-wrap{padding:24px 28px;}
+.strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.sc{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.sc-icon{font-size:22px;margin-bottom:10px;}
+.sc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:8px;}
+.sc-body{font-size:12px;color:var(--muted);line-height:1.8;}
+.sc-body strong{color:var(--text);}
+.sc-list{list-style:none;margin-top:8px;}
+.sc-list li{padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);}
+.sc-list li:last-child{border-bottom:none;}
+.sc-list .r{color:var(--lime);margin-right:7px;}
+
+/* MINDSET */
+.mind-wrap{padding:24px 28px;}
+.mot-banner{padding:20px;background:rgba(163,230,53,.05);border:1px solid rgba(163,230,53,.15);border-radius:10px;margin-bottom:16px;}
+.mot-label{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--lime);margin-bottom:8px;}
+.mot-main{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;line-height:1.4;margin-bottom:8px;}
+.mot-sub{font-size:12px;color:var(--muted);line-height:1.8;}
+.mot-sub strong{color:var(--text);}
+.rf-grid{display:grid;gap:9px;}
+.rfc{display:flex;gap:13px;padding:14px;background:var(--s1);border:1px solid var(--border);border-radius:8px;}
+.rfi{font-size:19px;flex-shrink:0;}
+.rft{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.rfb{font-size:11px;color:var(--muted);line-height:1.65;}
+.rfb strong{color:var(--text);}
+
+/* TIMELINE */
+.tl-wrap{padding:24px 28px;}
+.tl-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}
+.tl-left{display:flex;flex-direction:column;align-items:center;}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.tl-line{width:1px;flex:1;background:var(--border);margin-top:5px;}
+.d-lime{background:var(--lime);box-shadow:0 0 7px rgba(163,230,53,.5);}
+.d-orange{background:var(--orange);}
+.d-blue{background:var(--blue);}
+.d-green{background:var(--green);}
+.tl-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;margin-bottom:5px;}
+.tl-desc{font-size:11px;color:var(--muted);line-height:1.75;}
+.tl-desc strong{color:var(--text);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fi{animation:fadeUp .35s ease both;}
+.fi:nth-child(2){animation-delay:.04s;}.fi:nth-child(3){animation-delay:.08s;}.fi:nth-child(4){animation-delay:.12s;}
+.fi:nth-child(5){animation-delay:.16s;}.fi:nth-child(6){animation-delay:.20s;}.fi:nth-child(7){animation-delay:.24s;}
+
+@media(max-width:580px){
+  header,.sched,.strat-wrap,.mind-wrap,.tl-wrap,.app-bar,.brain-note,.tonight-bar{padding-left:16px;padding-right:16px;}
+  .tabs{padding:0 12px;}
+  h1{font-size:26px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SWE / CS — Week of March 9, 2026</div>
+  <h1>One thing<br>at a <em>time.</em></h1>
+  <p class="subhead">
+    <strong>Monday morning is your reset.</strong> Room, laundry, dishes — done before your afternoon commitments. A clean space unlocks everything else. The career stuff starts Monday afternoon and runs all week from there.
+  </p>
+</header>
+
+<div class="brain-note">
+  <div class="bn-label">How this plan is built — read this once</div>
+  Your brain moves to the next thing mid-task. That's not a flaw — it just means you need <strong>external structure instead of willpower.</strong> Every task here is <strong>one discrete thing with a clear finish line.</strong> When you feel pulled away: look at the list, find your current task, finish it, <em>then</em> move. The list is your anchor. Use it.
+</div>
+
+<div class="tonight-bar">
+  <div class="tn-icon">🌙</div>
+  <div>
+    <div class="tn-title">Tonight (Sunday) — two things, then sleep</div>
+    <div class="tn-body">
+      <strong>1. Clear your bed</strong> — move everything off it onto the floor or a chair. You don't need to sort it. You just need to be able to sleep in it. Set a 10-min timer.<br><br>
+      <strong>2. Clear your desk surface</strong> — same deal. Move everything off it, anywhere. You just need one clear surface for tomorrow morning.<br><br>
+      Then sleep. No more tasks tonight. No coffee after 3pm tomorrow. Everything else starts Monday.
+    </div>
+  </div>
+</div>
+
+<!-- App counter -->
+<div class="app-bar">
+  <div>
+    <div class="app-lbl">Apps this week</div>
+    <div class="app-big" id="appNum">0</div>
+  </div>
+  <div class="app-right">
+    <div class="prog-track"><div class="prog-fill" id="appFill" style="width:0%"></div></div>
+    <div class="app-sublbl" id="appLbl">0 / 50 — starts Monday afternoon</div>
+  </div>
+  <div class="app-btns">
+    <button class="btn sm" onclick="chApps(-1)">−1</button>
+    <button class="btn primary" onclick="chApps(1)">+ Applied ✓</button>
+    <button class="btn sm" onclick="chApps(5)">+5 bulk</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('schedule',this)">📅 Schedule</button>
+  <button class="tab" onclick="switchTab('strategy',this)">🎯 SWE Strategy</button>
+  <button class="tab" onclick="switchTab('timeline',this)">🗓 Big Picture</button>
+  <button class="tab" onclick="switchTab('mindset',this)">🧠 Mindset</button>
+</div>
+
+<!-- ═══════════ SCHEDULE ═══════════ -->
+<div class="panel active" id="panel-schedule">
+<div class="sched">
+
+  <div class="rule-card fi">
+    <div class="rc-title">The one rule for every day this week</div>
+    When you feel pulled to something else mid-task — <strong>don't switch. Look at the list. Finish the current box first. Then move.</strong> The list decides the order, not your brain in the moment. On days everything falls apart: your minimum is marked <span class="min-badge">MIN</span> — just do those and the day counts.
+  </div>
+
+  <div class="day-grid">
+
+    <!-- SUNDAY TONIGHT -->
+    <div class="day-block is-today fi" id="day-0">
+      <div class="day-hdr" onclick="toggleDay('day-0')">
+        <div class="day-pip pip-lime"></div>
+        <div class="day-name-wrap"><div class="dn">Sunday Night</div><div class="dd">Mar 8 · Tonight · 2 tasks only</div></div>
+        <div class="day-chips">
+          <span class="chip c-room">🛏 Bed</span>
+          <span class="chip c-room">🖥 Desk</span>
+        </div>
+        <div class="day-prog" id="prog-day-0">0/2</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="sec-label first">Right now — then sleep</div>
+        <div class="task" onclick="toggleTask(this,'day-0')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Clear your bed so you can sleep in it</strong></div>
+          <div class="tsub">Set a 10-min timer. Move everything off it — floor, chair, anywhere. Don't sort. Just clear it. Timer done = stop.</div>
+        </div></div>
+        <div class="task" onclick="toggleTask(this,'day-0')"><div class="cb">✓</div><div>
+          <div class="ttxt">Clear your desk surface</div>
+          <div class="tsub">If you have energy after the bed — move everything off the desk too. Anywhere is fine. You just need one clear surface for tomorrow morning. If you're tired: skip this and sleep.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- MONDAY -->
+    <div class="day-block is-monday fi" id="day-1">
+      <div class="day-hdr" onclick="toggleDay('day-1')">
+        <div class="day-pip pip-orange"></div>
+        <div class="day-name-wrap"><div class="dn">Monday</div><div class="dd">Mar 9 · Reset Day</div></div>
+        <div class="day-chips">
+          <span class="chip c-room">🧹 Studio reset</span>
+          <span class="chip c-apps">First apps</span>
+          <span class="chip c-admin">Setup</span>
+        </div>
+        <div class="day-prog" id="prog-day-1">0/10</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+
+        <div class="sec-label first">9:00–9:30am — Morning start (don't skip this)</div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt">Wake up, make coffee, drink it slowly ☕</div>
+          <div class="tsub">No phone, no apps, no email for 20–30 min. Just coffee. This is in the plan on purpose — you need a ramp, not a cold start. No coffee after 3pm.</div>
+        </div></div>
+
+        <div class="sec-label">9:30am — Studio Reset (do in this exact order)</div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Put first laundry load in downstairs</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Grab the biggest pile of clothes. Carry it down. Start the machine. Walk back up. Done. <strong>Set a phone timer for the cycle length</strong> so you don't forget to move it.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Do all dishes while laundry runs</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Put on a playlist or podcast. Wash everything in the sink. This is one task with a clear end: empty sink. Don't wipe down the kitchen yet — just dishes.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Floor: make a path + clear the main open area</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub"><span class="tbadge">20 min timer</span>Pick everything off the floor and put it on the bed or a chair to sort later. You don't need to sort yet. Just clear the floor. Timer off = stop, whatever state it's in.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt">Move laundry to dryer (when timer goes off)</div>
+          <div class="tsub">Timer goes off → go immediately. If you think "I'll do it in a minute" it won't happen. Go when the timer says go.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt">Sort the pile from the floor into 3 groups: put away / laundry / trash</div>
+          <div class="tsub"><span class="tbadge">15 min timer</span>Three piles. That's the task. Don't deep-clean. Don't reorganize. Just three piles, then stop when the timer ends.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt">Collect laundry from dryer + put it somewhere (fold later this week)</div>
+          <div class="tsub">A clean pile on the bed or chair is fine. Folding is a separate task. Don't let perfect stop you from done.</div>
+        </div></div>
+
+        <div class="sec-label">Before afternoon commitments — Career Setup (30 min, fast)</div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Send follow-up email to Feb 19 company</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">"I wanted to follow up on my final round interview on Feb 19 — I remain very interested and would love any update on your timeline. Thank you." Send it. Close the tab. Stop thinking about it.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Make your application tracker (Google Sheets)</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Columns: Company · Role · Platform · Date Applied · Status · OA Deadline. This takes 5 minutes. Do not skip this — it's what keeps 50 apps from feeling like chaos.</div>
+        </div></div>
+
+        <div class="sec-label">After afternoon commitments — First applications</div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 applications — LinkedIn Easy Apply blitz</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Search: "Software Engineer Intern Summer 2026" → filter Easy Apply. Resume must be uploaded and ready. One sitting, 5 apps. Don't agonize over each one — if you're 60% qualified, apply.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-1')"><div class="cb">✓</div><div>
+          <div class="ttxt">Polish your SWE resume if not already done</div>
+          <div class="tsub">1 page. Projects with GitHub links. Each bullet: verb + tech + impact. Jake's Resume on Overleaf is the template to use. This is a one-time cost that unlocks all future apps.</div>
+        </div></div>
+
+      </div>
+    </div>
+
+    <!-- TUESDAY -->
+    <div class="day-block fi" id="day-2">
+      <div class="day-hdr" onclick="toggleDay('day-2')">
+        <div class="day-pip pip-muted"></div>
+        <div class="day-name-wrap"><div class="dn">Tuesday</div><div class="dd">Mar 10</div></div>
+        <div class="day-chips">
+          <span class="chip c-apps">10 apps</span>
+          <span class="chip c-room">Laundry 2</span>
+          <span class="chip c-school">School</span>
+        </div>
+        <div class="day-prog" id="prog-day-2">0/5</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="sec-label first">9:00–9:30am — Coffee first ☕</div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt">Wake up, coffee, no screens for 20 min</div>
+          <div class="tsub">Same as Monday. Ramp up slowly. No coffee after 3pm.</div>
+        </div></div>
+
+        <div class="sec-label">9:30am — Applications (before anything else)</div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 applications</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub"><span class="tbadge">~30 min</span>Do this before email, social media, anything. Morning = peak recruiter visibility. LinkedIn Easy Apply + Handshake. 5 apps, tracker updated, done.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt">Put second laundry load in</div>
+          <div class="tsub">The pile from Monday sorting. While it runs: take a break or do something small. Set a timer. Move it to dryer when done.</div>
+        </div></div>
+
+        <div class="sec-label">Afternoon/Evening</div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 more applications — include 2 targeted ones</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">For targeted: paste the JD into a doc, highlight keywords (Python, React, REST APIs etc.), confirm those exact words are in your resume. 10 total today.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt">Optimize LinkedIn for recruiter searches</div>
+          <div class="tsub">Headline: "CS Student · SWE Intern · Graduating Dec 2026." Open to Work (recruiters only). Add projects with GitHub links. This is passive applying while you sleep.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-2')"><div class="cb">✓</div><div>
+          <div class="ttxt">School: 1 focused hour on project or HW</div>
+          <div class="tsub"><span class="tbadge">25/5 Pomodoro</span>Timer on. Phone in another room. One task. When the thought "I should do X instead" appears: write it on a sticky note and keep going. Do not switch.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- WEDNESDAY -->
+    <div class="day-block fi" id="day-3">
+      <div class="day-hdr" onclick="toggleDay('day-3')">
+        <div class="day-pip pip-muted"></div>
+        <div class="day-name-wrap"><div class="dn">Wednesday</div><div class="dd">Mar 11 · Peak Day</div></div>
+        <div class="day-chips">
+          <span class="chip c-apps">10 apps</span>
+          <span class="chip c-apps">Outreach</span>
+          <span class="chip c-school">School</span>
+          <span class="chip c-leet">LeetCode</span>
+        </div>
+        <div class="day-prog" id="prog-day-3">0/6</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="sec-label first">9:00–9:30am — Coffee first ☕</div>
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt">Wake up, coffee, ease in — no screens 20 min</div>
+          <div class="tsub">Same routine every morning. Consistency in the morning makes the rest predictable. No coffee after 3pm.</div>
+        </div></div>
+        <div class="sec-label">9:30am — Morning</div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 applications — from your target list</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Wednesday morning = peak recruiter activity. Best day to apply. Prioritize companies you actually want. Mid-size tech: Stripe, Figma, Plaid, Notion, Robinhood, Duolingo, etc.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Send 3 cold LinkedIn messages to SWE interns at target companies</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">"Hi [name], I just applied to [role] at [company] — would love to hear about your experience there. Happy to keep it short." Don't ask for referrals yet. Build the connection first.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt">1 LeetCode Easy — Two Sum or Contains Duplicate</div>
+          <div class="tsub"><span class="tbadge">20 min max</span>NeetCode.io — Blind 75, start from the top. 20 min attempt then read the solution fully. Goal this week: restart the habit. 3 problems by Sunday is a win.</div>
+        </div></div>
+
+        <div class="sec-label">Afternoon/Evening</div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 more applications — new platforms</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Try Simplify.jobs (auto-fills forms), Wellfound (startups, faster replies), Builtin.com. Diversify where you're finding roles.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt">School: 2-hour project session</div>
+          <div class="tsub">Hard push tonight so Thursday is lighter. Pomodoro timer. Sticky note for intrusive tasks. One thing at a time.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-3')"><div class="cb">✓</div><div>
+          <div class="ttxt">Fold laundry from dryer (while watching something — this is allowed)</div>
+          <div class="tsub">Put on a show or video. Fold while watching. This is not wasted time — it's multitasking that actually works because one task is physical and automatic.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- THURSDAY -->
+    <div class="day-block fi" id="day-4">
+      <div class="day-hdr" onclick="toggleDay('day-4')">
+        <div class="day-pip pip-muted"></div>
+        <div class="day-name-wrap"><div class="dn">Thursday</div><div class="dd">Mar 12</div></div>
+        <div class="day-chips">
+          <span class="chip c-apps">7 apps</span>
+          <span class="chip c-apps">New Grad</span>
+          <span class="chip c-school">HW</span>
+          <span class="chip c-leet">LeetCode</span>
+        </div>
+        <div class="day-prog" id="prog-day-4">0/4</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="sec-label first">9:00–9:30am — Coffee first ☕</div>
+        <div class="task" onclick="toggleTask(this,'day-4')"><div class="cb">✓</div><div>
+          <div class="ttxt">Wake up, coffee, ease in — no screens 20 min</div>
+          <div class="tsub">Same routine. By now it should feel automatic. No coffee after 3pm.</div>
+        </div></div>
+        <div class="sec-label">9:30am — Morning</div>
+
+        <div class="task" onclick="toggleTask(this,'day-4')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 4 internship applications</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">You should be at 25+ total by now. Keep the streak. Use your saved target list — should be fast.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-4')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Apply to 3 new grad / full-time SWE roles (Jan 2027 start)</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Search "New grad software engineer 2026" on LinkedIn + Levels.fyi/jobs. Companies hire for Jan 2027 starts right now. This is a parallel track — not a backup plan. Do it today.</div>
+        </div></div>
+
+        <div class="sec-label">Evening</div>
+
+        <div class="task" onclick="toggleTask(this,'day-4')"><div class="cb">✓</div><div>
+          <div class="ttxt">Finish school HW due this week — do not carry into weekend</div>
+          <div class="tsub">Whatever is due Friday or Monday — finish it tonight. Weekend school work destroys your recovery. Pomodoro. One task at a time. Sticky note trick when distracted.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-4')"><div class="cb">✓</div><div>
+          <div class="ttxt">LeetCode: 1 Medium — Best Time to Buy Stock or Valid Palindrome</div>
+          <div class="tsub"><span class="tbadge">25 min</span>Two pointers pattern. Attempt it, then fully understand the solution. 2 problems done by now = you're rebuilding the habit.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- FRIDAY -->
+    <div class="day-block fi" id="day-5">
+      <div class="day-hdr" onclick="toggleDay('day-5')">
+        <div class="day-pip pip-muted"></div>
+        <div class="day-name-wrap"><div class="dn">Friday</div><div class="dd">Mar 13</div></div>
+        <div class="day-chips">
+          <span class="chip c-apps">5 apps</span>
+          <span class="chip c-room">Last laundry</span>
+          <span class="chip c-rest">Recharge</span>
+        </div>
+        <div class="day-prog" id="prog-day-5">0/4</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="sec-label first">9:00–9:30am — Coffee first ☕</div>
+        <div class="task" onclick="toggleTask(this,'day-5')"><div class="cb">✓</div><div>
+          <div class="ttxt">Wake up, coffee, ease in — no screens 20 min</div>
+          <div class="tsub">End of the week. Same routine. You've earned a slow morning. No coffee after 3pm.</div>
+        </div></div>
+        <div class="sec-label">9:30am — Morning</div>
+
+        <div class="task" onclick="toggleTask(this,'day-5')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit 5 applications — include stretch companies</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">Apply to places you think are a reach. They reject you for free. Apply anyway. Stretch companies sometimes convert when others don't.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-5')"><div class="cb">✓</div><div>
+          <div class="ttxt">Do final laundry load + any remaining clothes</div>
+          <div class="tsub">Last one. By end of Friday, laundry is completely done for the week. While it runs: update your tracker below.</div>
+        </div></div>
+
+        <div class="sec-label">Afternoon/Evening</div>
+
+        <div class="task" onclick="toggleTask(this,'day-5')"><div class="cb">✓</div><div>
+          <div class="ttxt">Update app tracker — check for OA invites and deadlines</div>
+          <div class="tsub">Online assessments expire in 3–5 days. If you got any this week, schedule them NOW. Log everything in your tracker.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-5')"><div class="cb">✓</div><div>
+          <div class="ttxt">One full hour of something you enjoy — guilt free</div>
+          <div class="tsub">You've applied 35+ times, reset your room, done school work, done LeetCode. You earned this. Recovery is not optional. It's what makes next week possible.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- WEEKEND -->
+    <div class="day-block fi" id="day-6">
+      <div class="day-hdr" onclick="toggleDay('day-6')">
+        <div class="day-pip pip-muted"></div>
+        <div class="day-name-wrap"><div class="dn">Weekend</div><div class="dd">Mar 14–15</div></div>
+        <div class="day-chips">
+          <span class="chip c-apps">Hit 50</span>
+          <span class="chip c-school">Next quarter</span>
+          <span class="chip c-rest">Rest</span>
+          <span class="chip c-leet">LeetCode</span>
+        </div>
+        <div class="day-prog" id="prog-day-6">0/4</div>
+        <span class="caret">▾</span>
+      </div>
+      <div class="tasks">
+        <div class="task" onclick="toggleTask(this,'day-6')"><div class="cb">✓</div><div>
+          <div class="ttxt"><strong>Submit remaining apps to reach 50</strong> <span class="min-badge">MIN</span></div>
+          <div class="tsub">If you're at 50 already: you're done, take the win. If you're at 40+: that's a massive week — submit a few more casually. If life happened and you're lower: no shame, just keep going.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-6')"><div class="cb">✓</div><div>
+          <div class="ttxt">LeetCode: 1 problem — any pattern you want to review</div>
+          <div class="tsub">3 problems this week = the habit is restarted. That's the win. Don't grind on the weekend — one problem and you're done.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-6')"><div class="cb">✓</div><div>
+          <div class="ttxt">Research easier Saturday courses for next quarter — finalize shortlist</div>
+          <div class="tsub">Lighter load = more time for this stuff. Check registration deadlines. Treat this as a strategic career decision, not settling.</div>
+        </div></div>
+
+        <div class="task" onclick="toggleTask(this,'day-6')"><div class="cb">✓</div><div>
+          <div class="ttxt">15-min review + actual rest for the remainder</div>
+          <div class="tsub">What worked, what to adjust. Write 3 lines. Then stop and rest for real — the career stuff will be there Monday. You cannot run this pace without refilling.</div>
+        </div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ STRATEGY ═══════════ -->
+<div class="panel" id="panel-strategy">
+<div class="strat-wrap">
+  <div class="strat-grid">
+    <div class="sc fi">
+      <div class="sc-icon">⚡</div>
+      <div class="sc-title">Speed Apply — 35 of your 50</div>
+      <div class="sc-body">LinkedIn Easy Apply + Handshake + Simplify.jobs. One resume, many applications. Under 5 min each. If you're 60%+ qualified: apply. Don't write cover letters for these. Volume is the strategy.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">🎯</div>
+      <div class="sc-title">Targeted Apply — 15 of your 50</div>
+      <div class="sc-body">Companies you genuinely want. <strong>Paste the JD into a doc → highlight keywords (Python, REST, React, etc.) → confirm those exact words are in your resume bullets.</strong> ATS filters by exact match. Spend 15–20 min. These convert at much higher rates.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">📋</div>
+      <div class="sc-title">Best SWE Platforms (Ranked)</div>
+      <div class="sc-body">
+        <ul class="sc-list">
+          <li><span class="r">1.</span><strong>LinkedIn Easy Apply</strong> — volume + recruiter visibility</li>
+          <li><span class="r">2.</span><strong>Handshake</strong> — campus roles, many still open</li>
+          <li><span class="r">3.</span><strong>Simplify.jobs</strong> — aggregates + auto-fills forms</li>
+          <li><span class="r">4.</span><strong>Wellfound (AngelList)</strong> — startups, faster responses</li>
+          <li><span class="r">5.</span><strong>Levels.fyi/jobs</strong> — tech companies + comp data</li>
+          <li><span class="r">6.</span><strong>Builtin.com</strong> — mid-size + startup tech</li>
+          <li><span class="r">7.</span>Direct career pages — Google, Meta, Amazon, Microsoft</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">🗓</div>
+      <div class="sc-title">Summer 2026 — Where You Stand</div>
+      <div class="sc-body">Big tech recruiting is mostly closed — <strong>but still apply.</strong> Some roles trickle through March. Mid-size companies (Stripe, Figma, Plaid, Robinhood, Duolingo, Notion), fintech, health tech, and startups are <strong>actively recruiting right now.</strong> Handshake has campus-focused roles open through April–May. Apply to everything plausible.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">💼</div>
+      <div class="sc-title">New Grad Jan 2027 — Apply Now</div>
+      <div class="sc-body">Companies open new grad SWE roles <strong>6–9 months before start.</strong> Jan 2027 = right now through summer. Search <strong>"New grad software engineer 2026"</strong> on LinkedIn — real open roles exist today. Apply in parallel with internships. This is not a backup. It's a parallel track that can fully close your January gap.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">🧠</div>
+      <div class="sc-title">LeetCode — Realistic This Week</div>
+      <div class="sc-body"><strong>3–4 problems only.</strong> NeetCode.io, Blind 75, start from the top. Arrays → HashMaps → Two Pointers. 20 min attempt → fully understand solution. <strong>Habit beats grinding.</strong> You build from 3 problems, not from 20 exhausted attempts.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">📝</div>
+      <div class="sc-title">SWE Resume — Key Points</div>
+      <div class="sc-body"><strong>Projects are your experience</strong> if work history is thin — include GitHub links. ATS tip: use exact keyword phrasing from JDs. Bullets: action verb + tech + quantified impact. Use Jake's Resume on Overleaf. 1 page. Done is better than perfect.</div>
+    </div>
+    <div class="sc fi">
+      <div class="sc-icon">📬</div>
+      <div class="sc-title">Cold Outreach Script</div>
+      <div class="sc-body">"Hi [name], I just applied to [role] at [company] and saw your background — would love to hear about your experience there. Happy to keep it to 10 min." <strong>Don't ask for a referral first.</strong> Build the connection — referrals come naturally after a real conversation.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ TIMELINE ═══════════ -->
+<div class="panel" id="panel-timeline">
+<div class="tl-wrap">
+  <div class="tl-item fi">
+    <div class="tl-left"><div class="tl-dot d-lime"></div><div class="tl-line"></div></div>
+    <div><div class="tl-title">Now → April 2026 — Internship window</div>
+    <div class="tl-desc">Your primary window for Summer 2026. Mid-size companies, startups, and regional firms hire through April–May. Big tech is mostly closed but apply anyway. <strong>Handshake is your best bet for campus-connected roles still open.</strong></div></div>
+  </div>
+  <div class="tl-item fi">
+    <div class="tl-left"><div class="tl-dot d-orange"></div><div class="tl-line"></div></div>
+    <div><div class="tl-title">March → June 2026 — New grad applications open now</div>
+    <div class="tl-desc">Companies hiring for Jan 2027 open roles <strong>6–9 months early.</strong> That's right now. Apply to new grad SWE roles in parallel with internships this week. Not a fallback — a genuine parallel strategy.</div></div>
+  </div>
+  <div class="tl-item fi">
+    <div class="tl-left"><div class="tl-dot d-blue"></div><div class="tl-line"></div></div>
+    <div><div class="tl-title">May–August 2026 — Internship (if secured)</div>
+    <div class="tl-desc">Work hard, network genuinely. <strong>Ask about return offers by week 6.</strong> A return offer = Jan 2027 job solved. Companies strongly prefer converting their own interns over external hiring.</div></div>
+  </div>
+  <div class="tl-item fi">
+    <div class="tl-left"><div class="tl-dot d-orange"></div><div class="tl-line"></div></div>
+    <div><div class="tl-title">Sept–Nov 2026 — Final full-time push (peak season)</div>
+    <div class="tl-desc">If no return offer, fall recruiting peaks September–October. <strong>Having built your process now means you hit the accelerator again</strong> with resume ready, tracker ready, cold outreach muscle already built.</div></div>
+  </div>
+  <div class="tl-item fi">
+    <div class="tl-left"><div class="tl-dot d-green"></div></div>
+    <div><div class="tl-title">December 2026 — Graduate with offer in hand 🎓</div>
+    <div class="tl-desc">This is what every application this week is building toward. <strong>The distance between where you are and where you want to be is closed by weeks exactly like this one.</strong></div></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ MINDSET ═══════════ -->
+<div class="panel" id="panel-mindset">
+<div class="mind-wrap">
+
+  <div class="mot-banner fi">
+    <div class="mot-label">On the Feb 19 interview</div>
+    <div class="mot-main">17 days of silence is a slow company. Not a rejection.</div>
+    <div class="mot-sub">Industry average for post-final-round response is <strong>2–4 weeks, often longer.</strong> Send one follow-up Monday morning, then build pipeline so aggressively that one company's answer stops dominating your mental space. More shots on goal is the only real antidote to waiting anxiety.</div>
+  </div>
+
+  <div class="rf-grid">
+    <div class="rfc fi">
+      <div class="rfi">🔁</div>
+      <div>
+        <div class="rft">The mid-task brain drift — here's what's actually happening</div>
+        <div class="rfb">Your brain generates new thoughts constantly and treats them as equally urgent. This isn't laziness — it's how some brains are wired. The fix isn't willpower. It's a <strong>physical anchor:</strong> keep a sticky note next to you. Every intrusive thought goes on the note. Then you return to the current task. The note is your brain's "I'll handle it later" safety valve.</div>
+      </div>
+    </div>
+    <div class="rfc fi">
+      <div class="rfi">📊</div>
+      <div>
+        <div class="rft">The math works in your favor</div>
+        <div class="rfb">SWE internship conversion rate is roughly <strong>3–8% of applications.</strong> 50 apps = 2–4 potential interview pipelines from this week alone. You only need one offer. Volume isn't a workaround — it's the actual strategy, even for strong candidates.</div>
+      </div>
+    </div>
+    <div class="rfc fi">
+      <div class="rfi">🧹</div>
+      <div>
+        <div class="rft">Why Monday is a room reset, not a wasted career day</div>
+        <div class="rfb">A chaotic environment <strong>actively increases cognitive load</strong> — your brain uses energy tracking the mess even when you're not looking at it. Clearing your space on Monday isn't a detour from productivity. It's the thing that makes the rest of the week possible. One morning investment, five days of returns.</div>
+      </div>
+    </div>
+    <div class="rfc fi">
+      <div class="rfi">⚡</div>
+      <div>
+        <div class="rft">Can't start? 2-minute rule</div>
+        <div class="rfb">Commit to just 2 minutes: open LinkedIn, fill one field, carry one item of laundry. <strong>Activation energy is the hardest part.</strong> Once moving, momentum takes over. You don't need to feel motivated to act. Act first — the feeling follows after.</div>
+      </div>
+    </div>
+    <div class="rfc fi">
+      <div class="rfi">🎯</div>
+      <div>
+        <div class="rft">When the day breaks — minimum viable day</div>
+        <div class="rfb">Every day has items marked <span class="min-badge">MIN</span>. On a broken day: <strong>just do those.</strong> 5 apps + 1 school thing + laundry if it's laundry day. 30–45 minutes. You don't lose the week — you keep the streak. Streaks compound. Skipped days don't.</div>
+      </div>
+    </div>
+    <div class="rfc fi">
+      <div class="rfi">🧘</div>
+      <div>
+        <div class="rft">You're carrying a genuinely heavy load</div>
+        <div class="rfb">School + career uncertainty + emotional stuff + a messy space all at once is a real weight. <strong>The fact that you're building a plan instead of shutting down is already the right call.</strong> This week isn't about being perfect. It's about proving to yourself that you can show up. That evidence compounds into something real.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const S={apps:0,tasks:{}};
+try{const d=JSON.parse(localStorage.getItem('plan-v3')||'{}');S.apps=d.apps||0;S.tasks=d.tasks||{};}catch(e){}
+function save(){try{localStorage.setItem('plan-v3',JSON.stringify(S));}catch(e){}}
+
+function chApps(n){
+  S.apps=Math.max(0,S.apps+n);
+  document.getElementById('appNum').textContent=S.apps;
+  document.getElementById('appFill').style.width=Math.min((S.apps/50)*100,100)+'%';
+  const left=Math.max(0,50-S.apps);
+  document.getElementById('appLbl').textContent=S.apps>=50?'50/50 — GOAL HIT 🎉':`${S.apps} / 50 — ${left} to go`;
+  updateTotal();save();
+}
+
+function toggleTask(el,dayId){
+  el.classList.toggle('done');
+  const idx=Array.from(el.parentElement.children).indexOf(el);
+  S.tasks[`${dayId}-${idx}`]=el.classList.contains('done');
+  updateDayProg(dayId);updateTotal();save();
+}
+
+function toggleDay(id){document.getElementById(id).classList.toggle('collapsed');}
+
+function updateDayProg(id){
+  const b=document.getElementById(id);
+  const all=b.querySelectorAll('.task').length;
+  const done=b.querySelectorAll('.task.done').length;
+  document.getElementById('prog-'+id).textContent=done+'/'+all;
+}
+
+function updateTotal(){
+  const all=document.querySelectorAll('.task').length;
+  const done=document.querySelectorAll('.task.done').length;
+  const pct=Math.round((all?(done/all)*60:0)+Math.min((S.apps/50)*40,40));
+  document.getElementById('totalFill')||void 0;
+}
+
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+// Restore
+document.getElementById('appNum').textContent=S.apps;
+chApps(0);
+['day-0','day-1','day-2','day-3','day-4','day-5','day-6'].forEach(id=>{
+  const b=document.getElementById(id);
+  if(!b)return;
+  b.querySelectorAll('.task').forEach((t,i)=>{if(S.tasks[`${id}-${i}`])t.classList.add('done');});
+  updateDayProg(id);
+});
+</script>
+</body>
+</html>
